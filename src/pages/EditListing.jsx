@@ -213,251 +213,356 @@ function EditListing() {
   }
 
   return (
-    <div className='profile'>
-      <header>
-        <p className='pageHeader'>Create a Listing</p>
-      </header>
-
-      <main>
-        <form onSubmit={onSubmit}>
-        <label className='formLabel'>Sell / Rent</label>
-          <div className='formButtons'>
-            <button
-              type='button'
-              className={type === 'sale' ? 'formButtonActive' : 'formButton'}
-              id='type'
-              value='sale'
-              onClick={onMutate}
-            >
-              Sell
-            </button>
-            <button
-              type='button'
-              className={type === 'rent' ? 'formButtonActive' : 'formButton'}
-              id='type'
-              value='rent'
-              onClick={onMutate}
-            >
-              Rent
-            </button>
-          </div>
-
-          <label className='formLabel'>Brief Description</label>
-          <input
-            className='formInputName'
-            type='text'
-            id='description'
-            value={description}
-            onChange={onMutate}
-            maxLength='32'
-            minLength='10'
-            required
-          />
-
-          <div className='formRooms flex'>
-            <div>
-              <label className='formLabel'>Old(in months)</label>
-              <input
-                className='formInputSmall'
-                type='number'
-                id='old'
-                value={old}
-                onChange={onMutate}
-                min='1'
-                max='50'
-                required
-              />
-            </div>
-            <div>
-            <label className='formLabel'>{'\t'}&nbsp;&nbsp;&nbsp;Brand</label>
-          <input
-            className='formInputName'
-            type='text'
-            id='brand'
-            value={brand}
-            onChange={onMutate}
-            maxLength='32'
-            minLength='3'
-            required
-          />
-            </div>
-
-          </div>
-
-          <label className='formLabel'>Parking spot</label>
-          <div className='formButtons'>
-            <button
-              className={parking ? 'formButtonActive' : 'formButton'}
-              type='button'
-              id='parking'
-              value={true}
-              onClick={onMutate}
-              min='1'
-              max='50'
-            >
-              Yes
-            </button>
-            <button
-              className={
-                !parking && parking !== null ? 'formButtonActive' : 'formButton'
-              }
-              type='button'
-              id='parking'
-              value={false}
-              onClick={onMutate}
-            >
-              No
-            </button>
-          </div>
-
-          <label className='formLabel'>Gear</label>
-          <div className='formButtons'>
-            <button
-              className={gear ? 'formButtonActive' : 'formButton'}
-              type='button'
-              id='gear'
-              value={true}
-              onClick={onMutate}
-            >
-              Yes
-            </button>
-            <button
-              className={
-                !gear && gear !== null
-                  ? 'formButtonActive'
-                  : 'formButton'
-              }
-              type='button'
-              id='gear'
-              value={false}
-              onClick={onMutate}
-            >
-              No
-            </button>
-          </div>
-
-          <label className='formLabel'>Address</label>
-          <textarea
-            className='formInputAddress'
-            type='text'
-            id='address'
-            value={address}
-            onChange={onMutate}
-            required
-          />
-
-          {!geolocationEnabled && (
-            <div className='formLatLng flex'>
-              <div>
-                <label className='formLabel'>Latitude</label>
-                <input
-                  className='formInputSmall'
-                  type='number'
-                  id='latitude'
-                  value={latitude}
-                  onChange={onMutate}
-                  required
-                />
-              </div>
-              <div>
-                <label className='formLabel'>Longitude</label>
-                <input
-                  className='formInputSmall'
-                  type='number'
-                  id='longitude'
-                  value={longitude}
-                  onChange={onMutate}
-                  required
-                />
-              </div>
-              <button type='button' className='secondaryButton formLabel formInputSmall'
-                onClick={() => {
-                const encodedAddress = encodeURIComponent(address);
-                const latLongUrl = `https://www.latlong.net/?place=${encodedAddress}`;
-                window.open(latLongUrl, '_blank');
-                }}
-              >
-                Get Latitude and Longitude
-              </button>
-            </div>
-          )}
-
-          <label className='formLabel'>Offer</label>
-          <div className='formButtons'>
-            <button
-              className={offer ? 'formButtonActive' : 'formButton'}
-              type='button'
-              id='offer'
-              value={true}
-              onClick={onMutate}
-            >
-              Yes
-            </button>
-            <button
-              className={
-                !offer && offer !== null ? 'formButtonActive' : 'formButton'
-              }
-              type='button'
-              id='offer'
-              value={false}
-              onClick={onMutate}
-            >
-              No
-            </button>
-          </div>
-
-          <label className='formLabel'>Regular Price</label>
-          <div className='formPriceDiv'>
-            <input
-              className='formInputSmall'
-              type='number'
-              id='regularPrice'
-              value={regularPrice}
-              onChange={onMutate}
-              min='50'
-              max='750000000'
-              required
-            />
-            {type === 'rent' && <p className='formPriceText'>&#x20b9; / Month</p>}
-          </div>
-
-          {offer && (
-            <>
-              <label className='formLabel'>Discounted Price</label>
-              <input
-                className='formInputSmall'
-                type='number'
-                id='discountedPrice'
-                value={discountedPrice}
-                onChange={onMutate}
-                min='50'
-                max='750000000'
-                required={offer}
-              />
-            </>
-          )}
-
-
-          <label className='formLabel'>Images</label>
-          <p className='imagesInfo'>
-            The first image will be the cover (max 6).
+    <div className='min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pb-24'>
+      <div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
+        <header className='mb-8'>
+          <h1 className='text-4xl md:text-5xl font-extrabold text-gray-900'>
+            Edit Listing
+          </h1>
+          <p className='mt-2 text-lg text-gray-600'>
+            Update your cycle listing details
           </p>
-          <input
-            className='formInputFile'
-            type='file'
-            id='imageUrls' // Updated from 'images'
-            onChange={onMutate}
-            max='6'
-            accept='.jpg,.png,.jpeg'
-            multiple
-            required
-          />
-          <p className="uploadedCount">Uploaded {uploadedCount} image(s)</p>
-          <button type='submit' className='primaryButton createListingButton'>
-            Create Listing
-          </button>
-        </form>
-      </main>
+        </header>
+
+        <main>
+          <form onSubmit={onSubmit} className='bg-white rounded-2xl shadow-lg p-6 md:p-8 space-y-6'>
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-3'>
+                Sell / Rent
+              </label>
+              <div className='flex gap-4'>
+                <button
+                  type='button'
+                  className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all duration-200 ${
+                    type === 'sale'
+                      ? 'bg-primary text-white shadow-lg'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                  id='type'
+                  value='sale'
+                  onClick={onMutate}
+                >
+                  Sell
+                </button>
+                <button
+                  type='button'
+                  className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all duration-200 ${
+                    type === 'rent'
+                      ? 'bg-primary text-white shadow-lg'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                  id='type'
+                  value='rent'
+                  onClick={onMutate}
+                >
+                  Rent
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-2'>
+                Brief Description
+              </label>
+              <input
+                className='w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200'
+                type='text'
+                id='description'
+                value={description}
+                onChange={onMutate}
+                maxLength='32'
+                minLength='10'
+                required
+                placeholder='Enter a brief description'
+              />
+            </div>
+
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+              <div>
+                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                  Age (in months)
+                </label>
+                <input
+                  className='w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200'
+                  type='number'
+                  id='old'
+                  value={old}
+                  onChange={onMutate}
+                  min='1'
+                  max='50'
+                  required
+                />
+              </div>
+              <div>
+                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                  Brand
+                </label>
+                <input
+                  className='w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200'
+                  type='text'
+                  id='brand'
+                  value={brand}
+                  onChange={onMutate}
+                  maxLength='32'
+                  minLength='3'
+                  required
+                  placeholder='Cycle brand'
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-3'>
+                Parking Spot
+              </label>
+              <div className='flex gap-4'>
+                <button
+                  type='button'
+                  className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all duration-200 ${
+                    parking
+                      ? 'bg-primary text-white shadow-lg'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                  id='parking'
+                  value={true}
+                  onClick={onMutate}
+                >
+                  Yes
+                </button>
+                <button
+                  type='button'
+                  className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all duration-200 ${
+                    !parking && parking !== null
+                      ? 'bg-primary text-white shadow-lg'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                  id='parking'
+                  value={false}
+                  onClick={onMutate}
+                >
+                  No
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-3'>
+                Gear Type
+              </label>
+              <div className='flex gap-4'>
+                <button
+                  type='button'
+                  className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all duration-200 ${
+                    gear
+                      ? 'bg-primary text-white shadow-lg'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                  id='gear'
+                  value={true}
+                  onClick={onMutate}
+                >
+                  Gear Cycle
+                </button>
+                <button
+                  type='button'
+                  className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all duration-200 ${
+                    !gear && gear !== null
+                      ? 'bg-primary text-white shadow-lg'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                  id='gear'
+                  value={false}
+                  onClick={onMutate}
+                >
+                  Non Gear
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-2'>
+                Address
+              </label>
+              <textarea
+                className='w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 resize-none'
+                rows='3'
+                id='address'
+                value={address}
+                onChange={onMutate}
+                required
+                placeholder='Enter the full address'
+              />
+            </div>
+
+            {!geolocationEnabled && (
+              <div className='space-y-4'>
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                  <div>
+                    <label className='block text-sm font-medium text-gray-700 mb-2'>
+                      Latitude
+                    </label>
+                    <input
+                      className='w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200'
+                      type='number'
+                      id='latitude'
+                      value={latitude}
+                      onChange={onMutate}
+                      required
+                      placeholder='e.g., 28.6139'
+                    />
+                  </div>
+                  <div>
+                    <label className='block text-sm font-medium text-gray-700 mb-2'>
+                      Longitude
+                    </label>
+                    <input
+                      className='w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200'
+                      type='number'
+                      id='longitude'
+                      value={longitude}
+                      onChange={onMutate}
+                      required
+                      placeholder='e.g., 77.2090'
+                    />
+                  </div>
+                </div>
+                <button
+                  type='button'
+                  className='w-full py-3 px-4 bg-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-300 transition-all duration-200'
+                  onClick={() => {
+                    const encodedAddress = encodeURIComponent(address);
+                    const latLongUrl = `https://www.latlong.net/?place=${encodedAddress}`;
+                    window.open(latLongUrl, '_blank');
+                  }}
+                >
+                  Get Latitude and Longitude
+                </button>
+              </div>
+            )}
+
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-3'>
+                Special Offer
+              </label>
+              <div className='flex gap-4'>
+                <button
+                  type='button'
+                  className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all duration-200 ${
+                    offer
+                      ? 'bg-primary text-white shadow-lg'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                  id='offer'
+                  value={true}
+                  onClick={onMutate}
+                >
+                  Yes
+                </button>
+                <button
+                  type='button'
+                  className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all duration-200 ${
+                    !offer && offer !== null
+                      ? 'bg-primary text-white shadow-lg'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                  id='offer'
+                  value={false}
+                  onClick={onMutate}
+                >
+                  No
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-2'>
+                Regular Price
+              </label>
+              <div className='relative'>
+                <input
+                  className='w-full px-4 py-3 pr-24 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200'
+                  type='number'
+                  id='regularPrice'
+                  value={regularPrice}
+                  onChange={onMutate}
+                  min='50'
+                  max='750000000'
+                  required
+                  placeholder='0'
+                />
+                {type === 'rent' && (
+                  <span className='absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-medium'>
+                    ₹ / Month
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {offer && (
+              <div>
+                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                  Discounted Price
+                </label>
+                <input
+                  className='w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200'
+                  type='number'
+                  id='discountedPrice'
+                  value={discountedPrice}
+                  onChange={onMutate}
+                  min='50'
+                  max='750000000'
+                  required={offer}
+                  placeholder='0'
+                />
+              </div>
+            )}
+
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-2'>
+                Images
+              </label>
+              <p className='text-sm text-gray-500 mb-3'>
+                The first image will be the cover (max 6).
+              </p>
+              <div className='border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-primary transition-colors duration-200'>
+                <input
+                  className='hidden'
+                  type='file'
+                  id='imageUrls'
+                  onChange={onMutate}
+                  max='6'
+                  accept='.jpg,.png,.jpeg'
+                  multiple
+                  required
+                />
+                <label
+                  htmlFor='imageUrls'
+                  className='cursor-pointer block'
+                >
+                  <span className='text-primary font-semibold hover:text-green-600'>
+                    Click to upload images
+                  </span>
+                  <span className='block text-sm text-gray-500 mt-1'>
+                    PNG, JPG, JPEG up to 6 files
+                  </span>
+                </label>
+              </div>
+              {uploadedCount > 0 && (
+                <p className='mt-2 text-sm text-gray-600'>
+                  Uploaded {uploadedCount} image(s)
+                </p>
+              )}
+            </div>
+
+            <button
+              type='submit'
+              className='w-full py-4 px-6 bg-primary text-white font-semibold rounded-xl hover:bg-green-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-lg'
+            >
+              Update Listing
+            </button>
+          </form>
+        </main>
+      </div>
     </div>
   )
 }

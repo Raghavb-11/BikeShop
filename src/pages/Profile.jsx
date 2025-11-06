@@ -37,14 +37,12 @@ function Profile() {
     phone: '', 
   })
 
-
   useEffect(() => {
-    // Fetch phone number asynchronously and update state
     const fetchPhoneNumber = async () => {
       const phone = await getPhoneNumber();
       setFormData((prevState) => ({
         ...prevState,
-        phone, // Update phone field with resolved value
+        phone,
       }));
     };
 
@@ -96,7 +94,6 @@ function Profile() {
       const updates = {}
 
       if (auth.currentUser.displayName !== name) {
-        // Update display name in Firebase Auth
         await updateProfile(auth.currentUser, {
           displayName: name,
         })
@@ -104,17 +101,14 @@ function Profile() {
       }
 
       if (auth.currentUser.email !== email) {
-        // Update email in Firebase Auth
         await updateEmail(auth.currentUser, email)
         updates.email = email
       }
 
-      // Check if phone number has changed
       if (auth.currentUser.phoneNumber !== phone) {
         updates.phone = phone
       }
 
-      // If there are any updates, update Firestore
       if (Object.keys(updates).length > 0) {
         await updateDoc(userRef, updates)
         toast.success('Profile updated successfully')
@@ -145,77 +139,125 @@ function Profile() {
   }
 
   return (
-    <div className='profile'>
-      <header className='profileHeader'>
-        <p className='pageHeader'>My Profile</p>
-        <button type='button' className='logOut' onClick={onLogout}>
-          Logout
-        </button>
-      </header>
-      <main>
-        <div className='profileDetailsHeader'>
-          <p className='profileDetailsText'>Personal Details</p>
-          <p
-            className='changePersonalDetails'
-            onClick={() => {
-              changeDetails && onSubmit()
-              setChangeDetails((prevState) => !prevState)
-            }}
+    <div className='min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pb-24'>
+      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
+        <header className='flex justify-between items-center mb-8'>
+          <h1 className='text-4xl md:text-5xl font-extrabold text-gray-900'>
+            My Profile
+          </h1>
+          <button
+            type='button'
+            onClick={onLogout}
+            className='px-6 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-green-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
           >
-            {changeDetails ? 'done' : 'change'}
-          </p>
-        </div>
-        <div className='profileCard'>
-          <form>
-            <input
-              type='text'
-              id='name'
-              className={!changeDetails ? 'profileName' : 'profileNameActive'}
-              disabled={!changeDetails}
-              value={name}
-              onChange={onChange}
-            />
-            <input
-              type='email'
-              id='email'
-              className={!changeDetails ? 'profileEmail' : 'profileEmailActive'}
-              disabled={!changeDetails}
-              value={email}
-              onChange={onChange}
-            />
-            <input
-              type='tel'
-              id='phone'
-              className={!changeDetails ? 'profileEmail' : 'profileEmailActive'}
-              disabled={!changeDetails}
-              value={phone}
-              onChange={onChange}
-              placeholder='Your phone number'
-            />
-          </form>
-        </div>
-        <Link to='/create-listing' className='createListing'>
-          <img src={bikeIcon} alt='home' style={{ width: '50px', height: '50px' }} />
-          <p>Sell or rent your bike</p>
-          <img src={arrowRight} alt='arrow right' />
-        </Link>
-        {!loading && listings?.length > 0 && (
-          <>
-            <p className='listingText'>Your Listings</p>
-            <ul className='listingsList'>
-              {listings.map((listing) => (
-                <ListingItem
-                  key={listing.id}
-                  listing={listing.data}
-                  id={listing.id}
-                  onDelete={() => onDelete(listing.id)}
-                  onEdit={() => onEdit(listing.id)}
+            Logout
+          </button>
+        </header>
+
+        <main className='space-y-8'>
+          <div className='bg-white rounded-2xl shadow-lg p-6'>
+            <div className='flex justify-between items-center mb-6'>
+              <h2 className='text-2xl font-bold text-gray-900'>Personal Details</h2>
+              <button
+                onClick={() => {
+                  changeDetails && onSubmit()
+                  setChangeDetails((prevState) => !prevState)
+                }}
+                className='px-4 py-2 text-primary font-semibold hover:text-green-600 transition-colors duration-200'
+              >
+                {changeDetails ? 'Done' : 'Change'}
+              </button>
+            </div>
+
+            <form className='space-y-4'>
+              <div>
+                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                  Name
+                </label>
+                <input
+                  type='text'
+                  id='name'
+                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200 ${
+                    changeDetails
+                      ? 'border-primary bg-gray-50'
+                      : 'border-gray-300 bg-gray-100'
+                  }`}
+                  disabled={!changeDetails}
+                  value={name}
+                  onChange={onChange}
                 />
-              ))}
-            </ul>
-          </>
-        )}
-      </main>
+              </div>
+
+              <div>
+                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                  Email
+                </label>
+                <input
+                  type='email'
+                  id='email'
+                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200 ${
+                    changeDetails
+                      ? 'border-primary bg-gray-50'
+                      : 'border-gray-300 bg-gray-100'
+                  }`}
+                  disabled={!changeDetails}
+                  value={email}
+                  onChange={onChange}
+                />
+              </div>
+
+              <div>
+                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                  Phone
+                </label>
+                <input
+                  type='tel'
+                  id='phone'
+                  className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200 ${
+                    changeDetails
+                      ? 'border-primary bg-gray-50'
+                      : 'border-gray-300 bg-gray-100'
+                  }`}
+                  disabled={!changeDetails}
+                  value={phone}
+                  onChange={onChange}
+                  placeholder='Your phone number'
+                />
+              </div>
+            </form>
+          </div>
+
+          <Link
+            to='/create-listing'
+            className='flex items-center justify-between bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1'
+          >
+            <div className='flex items-center gap-4'>
+              <img src={bikeIcon} alt='bike' className='w-12 h-12' />
+              <p className='text-lg font-semibold text-gray-900'>
+                Sell or rent your bike
+              </p>
+            </div>
+            <img src={arrowRight} alt='arrow right' className='w-6 h-6' />
+          </Link>
+
+          {!loading && listings?.length > 0 && (
+            <div>
+              <h2 className='text-2xl font-bold text-gray-900 mb-6'>Your Listings</h2>
+              <ul className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+                {listings.map((listing) => (
+                  <ListingItem
+                    key={listing.id}
+                    listing={listing.data}
+                    id={listing.id}
+                    onDelete={() => onDelete(listing.id)}
+                    onEdit={() => onEdit(listing.id)}
+                  />
+                ))}
+              </ul>
+            </div>
+          )}
+        </main>
+      </div>
     </div>
   )
 }
